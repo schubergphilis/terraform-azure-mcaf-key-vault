@@ -65,15 +65,15 @@ STORAGE_ACCOUNT_DETAILS
 
 variable "resource_group" {
   description = "The name of the resource group in which to create the resources."
-  type        = object({
-    name      = string
-    location  = string
+  type = object({
+    name     = string
+    location = string
   })
-  default   = {
+  default = {
     name     = null
     location = null
   }
-  nullable  = false
+  nullable = false
 }
 
 variable "tags" {
