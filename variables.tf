@@ -2,6 +2,8 @@ variable "key_vault" {
   type = object({
     name                            = string
     tenant_id                       = string
+    resource_group_name             = optional(string, null)
+    location                        = optional(string, null)
     enabled_for_disk_encryption     = optional(bool, false)
     enabled_for_deployment          = optional(bool, false)
     enabled_for_template_deployment = optional(bool, false)
@@ -16,6 +18,7 @@ variable "key_vault" {
     cmkec_keyname                   = optional(string, "cmkec")
     cmk_keys_create                 = optional(bool, false)
   })
+  nullable    = false
   description = <<STORAGE_ACCOUNT_DETAILS
 This object describes the configuration for an Azure Key Vault.
 
@@ -56,7 +59,6 @@ key_vault = {
 
 ```
 STORAGE_ACCOUNT_DETAILS
-  nullable    = false
 }
 
 variable "resource_group" {
