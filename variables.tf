@@ -26,6 +26,8 @@ The following arguments are supported:
 
 - `name` - (Required) The name of the Key Vault.
 - `tenant_id` - (Required) The Azure Active Directory tenant ID that should be used for authenticating requests to the Key Vault.
+- `resource_group_name` - (Optional) The name of the resource group in which to create the Key Vault. If not provided, the resource group of the calling module will be used.
+- `location` - (Optional) The location of the Key Vault. If not provided, the location of the calling module will be used.
 - `enabled_for_disk_encryption` - (Optional) Specifies whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys.
 - `enabled_for_deployment` - (Optional) Specifies whether Azure Resource Manager is permitted to retrieve secrets from the vault.
 - `enabled_for_template_deployment` - (Optional) Specifies whether Azure Resource Manager is permitted to retrieve secrets from the vault.
