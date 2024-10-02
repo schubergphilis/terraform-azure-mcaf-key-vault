@@ -73,7 +73,7 @@ resource "azurerm_key_vault_key" "this" {
 
   key_opts        = each.value.opts
   key_type        = each.value.type
-  key_vault_id    = each.value.key_vault_resource_id
+  key_vault_id    = azurerm_key_vault.this.id
   name            = each.value.name == null ? each.key : each.value.name
   curve           = each.value.curve
   expiration_date = each.value.expiration_date

@@ -70,6 +70,7 @@ variable "key_vault_key" {
     curve       = optional(string, null)
     size        = optional(number, null)
     type        = optional(string, null)
+    opts        = optional(list(string), null)
     expiration_date = optional(string, null)
     not_before_date = optional(string, null)
     rotation_policy = optional(object({
@@ -110,16 +111,6 @@ key_vault_keys = {
 }
 ```
 KEY_DETAILS
-
-  validation {
-    error_message = "The type of the key. Possible values are `EC` and `RSA`."
-    condition     = var.key_vault_key == null || can(index(["RSA", "EC"], var.key_vault_key.type))
-  }
-
-  validation {
-    error_message = "The curve of the EC key. Required if `type` is `EC`. Possible values are `P-256`, `P-256K`, `P-384`, and `P-521`. This field will be required in a future release if key_type is EC or EC-HSM. The API will default to `P-256` if nothing is specified."
-    condition     = var.key_vault_key == null || can(index(["P-256", "P-384", "P-521", "SECP256K1"], var.key_vault_key.curve))
-  }
 }
 
 variable "resource_group" {
