@@ -18,6 +18,7 @@ variable "key_vault" {
     cmkec_keyname                   = optional(string, "cmkec")
     cmk_keys_create                 = optional(bool, false)
     cmk_rotation_period             = optional(string, "P90D")
+    tags                            = optional(map(string), {})
   })
   nullable    = false
   description = <<STORAGE_ACCOUNT_DETAILS
@@ -66,11 +67,11 @@ STORAGE_ACCOUNT_DETAILS
 
 variable "key_vault_key" {
   type = map(object({
-    name        = optional(string, null)
-    curve       = optional(string, null)
-    size        = optional(number, null)
-    type        = optional(string, null)
-    opts        = optional(list(string), null)
+    name            = optional(string, null)
+    curve           = optional(string, null)
+    size            = optional(number, null)
+    type            = optional(string, null)
+    opts            = optional(list(string), null)
     expiration_date = optional(string, null)
     not_before_date = optional(string, null)
     rotation_policy = optional(object({
@@ -81,6 +82,7 @@ variable "key_vault_key" {
       expire_after         = optional(string, null)
       notify_before_expiry = optional(string, null)
     }), null)
+    tags = optional(map(string), {})
   }))
   default     = null
   description = <<KEY_DETAILS
@@ -94,21 +96,18 @@ This map describes the configuration for Azure Key Vault keys.
 Example Inputs:
 
 ```hcl
-key_vault_keys = {
-  cmkrsa = {
-    key_vault_id = azurerm_key_vault.this.id
-    key_type     = "RSA"
-    key_size     = 4096
-    key_opts     = [
-      "decrypt",
-      "encrypt",
-      "sign",
-      "unwrapKey",
-      "verify",
-      "wrapKey"
-    ]
+  key_vault_key = {
+    key_name = {
+      type = "RSA"
+      size = 4096
+      opts = ["encrypt", "decrypt", "sign", "verify", "wrapKey", "unwrapKey"]
+    }
+    key_ec = {
+      type = "EC"
+      curve = "P-256"
+      opts = ["sign", "verify"]
+    }
   }
-}
 ```
 KEY_DETAILS
 }

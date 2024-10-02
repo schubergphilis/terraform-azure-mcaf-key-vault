@@ -33,6 +33,7 @@ resource "azurerm_key_vault" "this" {
 
   tags = merge(
     try(var.tags),
+    try(var.key_vault.tags),
     tomap({
       "Resource Type" = "Key vault"
     })
@@ -79,7 +80,6 @@ resource "azurerm_key_vault_key" "this" {
   expiration_date = each.value.expiration_date
   key_size        = each.value.size
   not_before_date = each.value.not_before_date
-  tags            = each.value.tags
 
   dynamic "rotation_policy" {
     for_each = each.value.rotation_policy != null ? [each.value.rotation_policy] : []
@@ -92,6 +92,14 @@ resource "azurerm_key_vault_key" "this" {
       }
     }
   }
+
+  tags = merge(
+    try(var.tags),
+    try(each.value.tags),
+    tomap({
+      "Resource Type" = "Key vault key"
+    })
+  )
 
   depends_on = [
     azurerm_role_assignment.this
