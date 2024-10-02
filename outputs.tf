@@ -19,13 +19,3 @@ output "key_vault_cmkrsa_id" {
   value       = one(azurerm_key_vault_key.cmkrsa[*].id)
   description = "CMK RSA Key ID"
 }
-
-output "key_vault_cmkec_keyname" {
-  value       = one(azurerm_key_vault_key.cmkec[*].name)
-  description = "CMK EC Key Name"
-}
-
-output "key_vault_cmkec_id" {
-  value       = one(azurerm_key_vault_key.cmkec[*].id)
-  description = "CMK EC Key ID"
-}

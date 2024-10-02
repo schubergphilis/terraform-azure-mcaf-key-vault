@@ -17,6 +17,7 @@ variable "key_vault" {
     cmkrsa_keyname                  = optional(string, "cmkrsa")
     cmkec_keyname                   = optional(string, "cmkec")
     cmk_keys_create                 = optional(bool, false)
+    cmk_rotation_period             = optional(string, "P90D")
   })
   nullable    = false
   description = <<STORAGE_ACCOUNT_DETAILS
@@ -61,6 +62,64 @@ key_vault = {
 
 ```
 STORAGE_ACCOUNT_DETAILS
+}
+
+variable "key_vault_key" {
+  type = map(object({
+    name        = optional(string, null)
+    curve       = optional(string, null)
+    size        = optional(number, null)
+    type        = optional(string, null)
+    expiration_date = optional(string, null)
+    not_before_date = optional(string, null)
+    rotation_policy = optional(object({
+      automatic = optional(object({
+        time_after_creation = optional(string, null)
+        time_before_expiry  = optional(string, null)
+      }), null)
+      expire_after         = optional(string, null)
+      notify_before_expiry = optional(string, null)
+    }), null)
+  }))
+  default     = null
+  description = <<KEY_DETAILS
+This map describes the configuration for Azure Key Vault keys.
+
+- `key_vault_id` - (Required) The ID of the Key Vault.
+- `key_type` - (Required) The type of the key.
+- `key_size` - (Required) The size of the key.
+- `key_opts` - (Required) The key operations that are permitted.
+
+Example Inputs:
+
+```hcl
+key_vault_keys = {
+  cmkrsa = {
+    key_vault_id = azurerm_key_vault.this.id
+    key_type     = "RSA"
+    key_size     = 4096
+    key_opts     = [
+      "decrypt",
+      "encrypt",
+      "sign",
+      "unwrapKey",
+      "verify",
+      "wrapKey"
+    ]
+  }
+}
+```
+KEY_DETAILS
+
+  validation {
+    error_message = "The type of the key. Possible values are `EC` and `RSA`."
+    condition     = var.key_vault_key == null || can(index(["RSA", "EC"], var.key_vault_key.type))
+  }
+
+  validation {
+    error_message = "The curve of the EC key. Required if `type` is `EC`. Possible values are `P-256`, `P-256K`, `P-384`, and `P-521`. This field will be required in a future release if key_type is EC or EC-HSM. The API will default to `P-256` if nothing is specified."
+    condition     = var.key_vault_key == null || can(index(["P-256", "P-384", "P-521", "SECP256K1"], var.key_vault_key.curve))
+  }
 }
 
 variable "resource_group" {

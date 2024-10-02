@@ -53,34 +53,45 @@ resource "azurerm_key_vault_key" "cmkrsa" {
   key_type     = "RSA"
   key_size     = 4096
   key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
     "unwrapKey",
-    "verify",
     "wrapKey"
   ]
+
+  rotation_policy {
+    automatic {
+      time_after_creation = var.key_vault.cmk_rotation_period
+    }
+  }
 
   depends_on = [
     azurerm_role_assignment.this
   ]
 }
 
-resource "azurerm_key_vault_key" "cmkec" {
-  count = var.key_vault.cmk_keys_create ? 1 : 0
+resource "azurerm_key_vault_key" "this" {
+  for_each = var.key_vault_key != null ? var.key_vault_key : {}
 
-  name         = var.key_vault.cmkec_keyname
-  key_vault_id = azurerm_key_vault.this.id
-  key_type     = "EC"
-  curve        = "P-256"
-  key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey"
-  ]
+  key_opts        = each.value.opts
+  key_type        = each.value.type
+  key_vault_id    = each.value.key_vault_resource_id
+  name            = each.value.name == null ? each.key : each.value.name
+  curve           = each.value.curve
+  expiration_date = each.value.expiration_date
+  key_size        = each.value.size
+  not_before_date = each.value.not_before_date
+  tags            = each.value.tags
+
+  dynamic "rotation_policy" {
+    for_each = each.value.rotation_policy != null ? [each.value.rotation_policy] : []
+    content {
+      expire_after         = rotation_policy.value.expire_after
+      notify_before_expiry = rotation_policy.value.notify_before_expiry
+
+      automatic {
+        time_before_expiry = rotation_policy.value.automatic.time_before_expiry
+      }
+    }
+  }
 
   depends_on = [
     azurerm_role_assignment.this
