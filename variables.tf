@@ -112,19 +112,6 @@ Example Inputs:
 KEY_DETAILS
 }
 
-variable "resource_group" {
-  description = "The name of the resource group in which to create the resources."
-  type = object({
-    name     = string
-    location = string
-  })
-  default = {
-    name     = null
-    location = null
-  }
-  nullable = false
-}
-
 variable "tags" {
   description = "A mapping of tags to assign to the resources."
   type        = map(string)

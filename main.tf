@@ -1,19 +1,8 @@
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_resource_group" "this" {
-  name     = var.resource_group.name
-  location = var.resource_group.location
-  tags = merge(
-    try(var.tags),
-    tomap({
-      "Resource Type" = "Resource Group"
-    })
-  )
-}
-
 resource "azurerm_key_vault" "this" {
-  resource_group_name             = var.key_vault.resource_group_name == null ? azurerm_resource_group.this.name : var.key_vault.resource_group_name
-  location                        = var.key_vault.location == null ? azurerm_resource_group.this.location : var.key_vault.location
+  resource_group_name             = var.key_vault.resource_group_name
+  location                        = var.key_vault.location
   name                            = var.key_vault.name
   tenant_id                       = var.key_vault.tenant_id
   sku_name                        = var.key_vault.sku
