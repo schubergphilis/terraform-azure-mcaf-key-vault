@@ -1,12 +1,8 @@
 run "basic" {
   variables {
-    resource_group = {
-      name     = "my-resource-group"
-      location = "East US"
-    }
-
     key_vault = {
       name                            = "kv001"
+      resource_group_name             = "kvrg"
       tenant_id                       = "your-tenant-id"
       enabled_for_disk_encryption     = false
       enabled_for_deployment          = false
@@ -16,10 +12,10 @@ run "basic" {
       soft_delete_retention_days      = 30
       sku                             = "standard"
       ip_rules                        = []
-      subnet_id                       = []
+      subnet_ids                      = []
       network_bypass                  = "None"
-      cmkrsa_keyname                  = "cmkrsa"
-      cmkec_keyname                   = "cmkec"
+      cmkrsa_key_name                 = "cmkrsa"
+      cmkec_key_name                  = "cmkec"
       cmk_keys_create                 = true
     }
 
@@ -40,8 +36,8 @@ run "basic" {
   }
 
   assert {
-    condition     = output.cmk_ec_keyname == "cmkec"
-    error_message = "Unexpected output.cmk_ec_keyname value"
+    condition     = output.cmk_ec_key_name == "cmkec"
+    error_message = "Unexpected output.cmk_ec_key_name value"
   }
 
 }

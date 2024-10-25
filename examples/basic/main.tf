@@ -2,13 +2,8 @@ terraform {
   required_version = ">= 1.7"
 }
 
-module "azure_core" {
+module "key_vault" {
   source = "../.."
-
-  resource_group = {
-    name     = "my-resource-group"
-    location = "East US"
-  }
 
   key_vault = {
     name                            = "my-key-vault"
@@ -21,10 +16,10 @@ module "azure_core" {
     soft_delete_retention_days      = 30
     sku                             = "standard"
     ip_rules                        = []
-    subnet_id                       = []
+    subnet_ids                      = []
     network_bypass                  = "AzureServices"
-    cmkrsa_keyname                  = "cmkrsa"
-    cmkec_keyname                   = "cmkec"
+    cmkrsa_key_name                 = "cmkrsa"
+    cmkec_key_name                  = "cmkec"
     cmk_keys_create                 = true
   }
 

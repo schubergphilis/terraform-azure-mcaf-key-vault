@@ -14,9 +14,9 @@ resource "azurerm_key_vault" "this" {
   soft_delete_retention_days      = var.key_vault.soft_delete_retention_days
 
   network_acls {
-    default_action             = length(var.key_vault.ip_rules) == 0 && length(var.key_vault.subnet_id) == 0 ? "Allow" : "Deny"
+    default_action             = length(var.key_vault.ip_rules) == 0 && length(var.key_vault.subnet_ids) == 0 ? "Allow" : "Deny"
     ip_rules                   = var.key_vault.ip_rules
-    virtual_network_subnet_ids = var.key_vault.subnet_id
+    virtual_network_subnet_ids = var.key_vault.subnet_ids
     bypass                     = var.key_vault.network_bypass
   }
 
@@ -38,7 +38,7 @@ resource "azurerm_role_assignment" "this" {
 resource "azurerm_key_vault_key" "cmkrsa" {
   count = var.key_vault.cmk_keys_create ? 1 : 0
 
-  name         = var.key_vault.cmkrsa_keyname
+  name         = var.key_vault.cmkrsa_key_name
   key_vault_id = azurerm_key_vault.this.id
   key_type     = "RSA"
   key_size     = 4096

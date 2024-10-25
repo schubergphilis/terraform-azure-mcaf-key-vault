@@ -10,7 +10,7 @@ output "key_vault_uri" {
   value = azurerm_key_vault.this.vault_uri
 }
 
-output "key_vault_cmkrsa_keyname" {
+output "key_vault_cmkrsa_key_name" {
   value       = one(azurerm_key_vault_key.cmkrsa[*].name)
   description = "CMK RSA Key Name"
 }
