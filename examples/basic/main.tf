@@ -8,6 +8,7 @@ module "key_vault" {
   key_vault = {
     name                            = "my-key-vault"
     tenant_id                       = "your-tenant-id"
+    resource_group_name             = "resource-group-name"
     enabled_for_disk_encryption     = true
     enabled_for_deployment          = false
     enabled_for_template_deployment = false
