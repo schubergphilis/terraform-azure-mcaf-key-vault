@@ -10,6 +10,7 @@ variable "key_vault" {
     enable_rbac_authorization       = optional(bool, true)
     purge_protection                = optional(bool, true)
     soft_delete_retention_days      = optional(number, 30)
+    public_network_access_enabled   = optional(bool, false)
     default_action                  = optional(string, "Deny")
     sku                             = optional(string, "standard")
     ip_rules                        = optional(list(string), [])
