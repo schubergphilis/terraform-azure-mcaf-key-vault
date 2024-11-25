@@ -10,6 +10,7 @@ variable "key_vault" {
     enable_rbac_authorization       = optional(bool, true)
     purge_protection                = optional(bool, true)
     soft_delete_retention_days      = optional(number, 30)
+    default_action                  = optional(string, "Deny")
     sku                             = optional(string, "standard")
     ip_rules                        = optional(list(string), [])
     subnet_ids                      = optional(list(string), [])
@@ -36,6 +37,7 @@ The following arguments are supported:
 - `enable_rbac_authorization` - (Optional) Specifies whether Azure RBAC is permitted to retrieve secrets from the vault.
 - `purge_protection` - (Optional) Specifies whether protection against purge is enabled for this Key Vault.
 - `soft_delete_retention_days` - (Optional) The number of days that items should be retained for once soft deleted.
+- `default_action` - (Optional) The default action to apply when no rules match from network_acls block.
 - `sku` - (Optional) The SKU of the Key Vault.
 - `ip_rules` - (Optional) List of IP addresses that are permitted to access the key vault.
 - `subnet_ids` - (Optional) List of subnet IDs that are permitted to access the key vault.
@@ -55,6 +57,7 @@ key_vault = {
   enabled_for_template_deployment = true
   enable_rbac_authorization       = true
   purge_protection                = true
+  default_action                  = "Deny"
   soft_delete_retention_days      = 30
   sku                             = "standard"
   cmkrsa_key_name                  = "cmkrsa"

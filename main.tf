@@ -14,7 +14,7 @@ resource "azurerm_key_vault" "this" {
   soft_delete_retention_days      = var.key_vault.soft_delete_retention_days
 
   network_acls {
-    default_action             = length(var.key_vault.ip_rules) == 0 && length(var.key_vault.subnet_ids) == 0 ? "Allow" : "Deny"
+    default_action             = length(var.key_vault.ip_rules) == 0 && length(var.key_vault.subnet_ids) == 0 ? var.key_vault.default_action : "Deny"
     ip_rules                   = var.key_vault.ip_rules
     virtual_network_subnet_ids = var.key_vault.subnet_ids
     bypass                     = var.key_vault.network_bypass
