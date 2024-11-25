@@ -14,6 +14,7 @@ module "key_vault" {
     enabled_for_template_deployment = false
     enable_rbac_authorization       = true
     purge_protection                = true
+    default_action                  = "Deny"
     soft_delete_retention_days      = 30
     sku                             = "standard"
     ip_rules                        = []
