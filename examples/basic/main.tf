@@ -10,6 +10,7 @@ module "key_vault" {
     tenant_id                       = "your-tenant-id"
     resource_group_name             = "resource-group-name"
     enabled_for_disk_encryption     = true
+    public_network_access_enabled   = false
     enabled_for_deployment          = false
     enabled_for_template_deployment = false
     enable_rbac_authorization       = true

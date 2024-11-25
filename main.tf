@@ -12,6 +12,7 @@ resource "azurerm_key_vault" "this" {
   enable_rbac_authorization       = var.key_vault.enable_rbac_authorization
   purge_protection_enabled        = var.key_vault.purge_protection
   soft_delete_retention_days      = var.key_vault.soft_delete_retention_days
+  public_network_access_enabled   = var.key_vault.public_network_access_enabled
 
   network_acls {
     default_action             = length(var.key_vault.ip_rules) == 0 && length(var.key_vault.subnet_ids) == 0 ? var.key_vault.default_action : "Deny"
