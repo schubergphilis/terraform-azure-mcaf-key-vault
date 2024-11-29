@@ -20,6 +20,7 @@ variable "key_vault" {
     cmkrsa_key_name                 = optional(string, "cmkrsa")
     cmkec_key_name                  = optional(string, "cmkec")
     cmk_rotation_period             = optional(string, "P90D")
+    cmk_expiry_period               = optional(string, "P180D")
     tags                            = optional(map(string), {})
   })
   nullable    = false
