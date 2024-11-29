@@ -41,3 +41,7 @@ run "basic" {
   }
 
 }
+
+provider "azurerm" {
+  features {}
+}
