@@ -9,6 +9,10 @@ terraform {
   }
 }
 
+provider "azurerm" {
+  features {}
+}
+
 module "key_vault" {
   source = "../.."
 
