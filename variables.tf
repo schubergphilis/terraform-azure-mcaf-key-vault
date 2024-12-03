@@ -19,7 +19,9 @@ variable "key_vault" {
     cmk_keys_create                 = optional(bool, false)
     cmkrsa_key_name                 = optional(string, "cmkrsa")
     cmkec_key_name                  = optional(string, "cmkec")
-    cmk_rotation_period             = optional(string, "P90D")
+    cmk_rotation_period             = optional(string, "P18M")
+    cmk_expiry_period               = optional(string, "P2Y")
+    cmk_notify_period               = optional(string, "P30D")
     tags                            = optional(map(string), {})
   })
   nullable    = false
@@ -39,13 +41,15 @@ The following arguments are supported:
 - `purge_protection` - (Optional) Specifies whether protection against purge is enabled for this Key Vault.
 - `soft_delete_retention_days` - (Optional) The number of days that items should be retained for once soft deleted.
 - `default_action` - (Optional) The default action to apply when no rules match from network_acls block.
-- `sku` - (Optional) The SKU of the Key Vault.
+- `sku` - (Optional) The SKU of the Key Vault. Default is `standard`.
 - `ip_rules` - (Optional) List of IP addresses that are permitted to access the key vault.
 - `subnet_ids` - (Optional) List of subnet IDs that are permitted to access the key vault.
-- `network_bypass` - (Optional) Specifies which traffic can bypass the network rules.
-- `cmk_keys_create` - (Optional) Specifies whether to create custom managed keys.
-- `cmkrsa_key_name` - (Optional) The name of the customer managed key with RSA algorithm to create.
-- `cmkec_key_name` - (Optional) The name of the customer managed key with EC algorithm to create.
+- `network_bypass` - (Optional) Specifies which traffic can bypass the network rules. Possible values are `AzureServices` and `None`.
+- `cmk_keys_create` - (Optional) Specifies whether to create custom managed keys. Default is false.
+- `cmkrsa_key_name` - (Optional) The name of the customer managed key with RSA algorithm to create. Default is `cmkrsa`.
+- `cmkec_key_name` - (Optional) The name of the customer managed key with EC algorithm to create. Default is `cmkec`.
+- `cmk_rotation_period` - (Optional) The time period after which the key should be rotated. Default is 18 months.
+- `cmk_expiry_period` - (Optional) The time period after which the key should expire. Default is 2 years.
 
 Example Inputs:
 
