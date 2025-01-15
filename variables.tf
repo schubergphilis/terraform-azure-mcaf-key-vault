@@ -1,9 +1,17 @@
+variable "resource_group_name" {
+  description = "The name of the resource group in which to create the resources."
+  type        = string
+}
+
+variable "location" {
+  description = "Location of the resources to create"
+  type        = string
+}
+
 variable "key_vault" {
   type = object({
     name                            = string
     tenant_id                       = optional(string, null)
-    resource_group_name             = string
-    location                        = string
     enabled_for_disk_encryption     = optional(bool, false)
     enabled_for_deployment          = optional(bool, false)
     enabled_for_template_deployment = optional(bool, false)
