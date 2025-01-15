@@ -33,7 +33,7 @@ variable "key_vault" {
     tags                            = optional(map(string), {})
   })
   nullable    = false
-  description = <<KEY_VAULT_DESCRIPTION
+  description = <<DESCRIPTION
 This object describes the configuration for an Azure Key Vault.
 
 The following arguments are supported:
@@ -76,7 +76,7 @@ key_vault = {
   cmk_keys_create                 = true
 
 ```
-KEY_VAULT_DESCRIPTION
+DESCRIPTION
 }
 
 variable "key_vault_key" {
@@ -99,7 +99,7 @@ variable "key_vault_key" {
     tags = optional(map(string), {})
   }))
   default     = null
-  description = <<KEY_DETAILS
+  description = <<DESCRIPTION
 This map describes the configuration for Azure Key Vault keys.
 
 - `key_vault_id` - (Required) The ID of the Key Vault.
@@ -123,7 +123,7 @@ Example Inputs:
     }
   }
 ```
-KEY_DETAILS
+DESCRIPTION
 }
 
 variable "tags" {
