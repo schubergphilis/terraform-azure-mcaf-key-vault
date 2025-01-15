@@ -56,6 +56,14 @@ resource "azurerm_key_vault_key" "cmkrsa" {
     notify_before_expiry = var.key_vault.cmk_notify_period
   }
 
+  tags = merge(
+    try(var.tags),
+    try(each.value.tags),
+    tomap({
+      "Resource Type" = "Key vault key"
+    })
+  )
+
   depends_on = [
     azurerm_role_assignment.this
   ]
