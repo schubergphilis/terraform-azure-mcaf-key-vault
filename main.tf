@@ -1,16 +1,16 @@
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "this" {
-  resource_group_name             = var.key_vault.resource_group_name
-  location                        = var.key_vault.location
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
   name                            = var.key_vault.name
-  tenant_id                       = var.key_vault.tenant_id
+  tenant_id                       = var.key_vault.tenant_id != null ? var.key_vault.tenant_id : data.azurerm_client_config.current.tenant_id
   sku_name                        = var.key_vault.sku
   enabled_for_disk_encryption     = var.key_vault.enabled_for_disk_encryption
   enabled_for_deployment          = var.key_vault.enabled_for_deployment
   enabled_for_template_deployment = var.key_vault.enabled_for_template_deployment
   enable_rbac_authorization       = var.key_vault.enable_rbac_authorization
-  purge_protection_enabled        = var.key_vault.purge_protection
+  purge_protection_enabled        = var.key_vault.purge_protection_enabled
   soft_delete_retention_days      = var.key_vault.soft_delete_retention_days
   public_network_access_enabled   = var.key_vault.public_network_access_enabled
 
