@@ -11,11 +11,11 @@ variable "location" {
 variable "key_vault" {
   type = object({
     name                            = string
+    enable_rbac_authorization       = true
     tenant_id                       = optional(string, null)
     enabled_for_disk_encryption     = optional(bool, false)
     enabled_for_deployment          = optional(bool, false)
     enabled_for_template_deployment = optional(bool, false)
-    enable_rbac_authorization       = optional(bool, true)
     purge_protection_enabled        = optional(bool, true)
     soft_delete_retention_days      = optional(number, 30)
     public_network_access_enabled   = optional(bool, false)
@@ -39,11 +39,11 @@ This object describes the configuration for an Azure Key Vault.
 The following arguments are supported:
 
 - `name` - (Required) The name of the Key Vault.
+- `enable_rbac_authorization` - is true by default.
 - `tenant_id` - (Optional) The Azure Active Directory tenant ID that should be used for authenticating requests to the Key Vault.
 - `enabled_for_disk_encryption` - (Optional) Specifies whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys.
 - `enabled_for_deployment` - (Optional) Specifies whether Azure Resource Manager is permitted to retrieve secrets from the vault.
 - `enabled_for_template_deployment` - (Optional) Specifies whether Azure Resource Manager is permitted to retrieve secrets from the vault.
-- `enable_rbac_authorization` - (Optional) Specifies whether Azure RBAC is permitted to retrieve secrets from the vault.
 - `purge_protection` - (Optional) Specifies whether protection against purge is enabled for this Key Vault.
 - `soft_delete_retention_days` - (Optional) The number of days that items should be retained for once soft deleted.
 - `default_action` - (Optional) The default action to apply when no rules match from network_acls block.
