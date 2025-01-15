@@ -1,9 +1,9 @@
 variable "key_vault" {
   type = object({
     name                            = string
-    tenant_id                       = string
+    tenant_id                       = optional(string, null)
     resource_group_name             = string
-    location                        = optional(string, null)
+    location                        = string
     enabled_for_disk_encryption     = optional(bool, false)
     enabled_for_deployment          = optional(bool, false)
     enabled_for_template_deployment = optional(bool, false)
