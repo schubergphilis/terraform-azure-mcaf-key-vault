@@ -16,7 +16,7 @@ variable "key_vault" {
     enabled_for_deployment          = optional(bool, false)
     enabled_for_template_deployment = optional(bool, false)
     enable_rbac_authorization       = optional(bool, true)
-    purge_protection                = optional(bool, true)
+    purge_protection_enabled        = optional(bool, true)
     soft_delete_retention_days      = optional(number, 30)
     public_network_access_enabled   = optional(bool, false)
     default_action                  = optional(string, "Deny")
