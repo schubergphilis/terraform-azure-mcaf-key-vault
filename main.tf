@@ -47,6 +47,7 @@ resource "azurerm_key_vault_key" "cmkrsa" {
     "unwrapKey",
     "wrapKey"
   ]
+  expiration_date = var.key_vault.cmk_expiration_date
 
   rotation_policy {
     automatic {
@@ -54,13 +55,6 @@ resource "azurerm_key_vault_key" "cmkrsa" {
     }
     expire_after         = var.key_vault.cmk_expiry_period
     notify_before_expiry = var.key_vault.cmk_notify_period
-  }
-
-  dynamic "expiration_date" {
-    for_each = var.key_vault.cmk_expiration_date != null ? [var.key_vault.cmk_expiration_date] : []
-    content {
-      expiration_date = expiration_date.value
-    }
   }
 
   depends_on = [
