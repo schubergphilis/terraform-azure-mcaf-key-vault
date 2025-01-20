@@ -47,6 +47,7 @@ resource "azurerm_key_vault_key" "cmkrsa" {
     "unwrapKey",
     "wrapKey"
   ]
+  expiration_date = var.key_vault.cmk_expiration_date
 
   rotation_policy {
     automatic {
