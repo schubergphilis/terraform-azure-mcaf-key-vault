@@ -1,0 +1,21 @@
+---
+name: "pr-yamllint"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  yamllint:
+    uses: schubergphilis/mcaf-github-workflows/.github/workflows/pr-yamllint.yml@feature/yamllint_workflow
