@@ -7,6 +7,7 @@ on:
       - '**'
 
 permissions:
+  # write permission is required to edit issue labels
   issues: write
 
 jobs:
