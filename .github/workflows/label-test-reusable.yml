@@ -11,5 +11,5 @@ permissions:
   issues: write
 
 jobs:
-  yamllint:
+  labelsync:
     uses: schubergphilis/mcaf-github-workflows/.github/workflows/label-synchronization.yaml@feature/yamllint_workflow
