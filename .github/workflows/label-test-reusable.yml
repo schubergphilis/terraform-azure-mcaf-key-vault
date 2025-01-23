@@ -1,0 +1,15 @@
+---
+name: "label-sync"
+
+on:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  # write permission is required to edit issue labels
+  issues: write
+
+jobs:
+  yamllint:
+    uses: schubergphilis/mcaf-github-workflows/.github/workflows/label-synchronization.yaml@feature/yamllint_workflow
