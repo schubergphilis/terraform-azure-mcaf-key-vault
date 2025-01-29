@@ -36,6 +36,15 @@ resource "azurerm_role_assignment" "this" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
+resource "azurerm_role_assignment" "additional" {
+  for_each = var.key_vault_role_assignments
+
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = each.value.role_definition_name
+  principal_id         = each.value.principal_id
+  description          = each.value.description
+}
+
 resource "azurerm_key_vault_key" "cmkrsa" {
   count = var.key_vault.cmk_keys_create ? 1 : 0
 
