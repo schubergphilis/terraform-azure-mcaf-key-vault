@@ -125,3 +125,24 @@ variable "tags" {
   description = "A mapping of tags to assign to the resources."
   type        = map(string)
 }
+
+variable "role_assignments" {
+  type = map(object({
+    role_definition_name = string
+    principal_id         = string
+    description         = optional(string, null)
+    condition          = optional(string, null)
+    condition_version  = optional(string, null)
+  }))
+  default     = {}
+  description = <<ROLE_ASSIGNMENTS
+This map describes the role assignments to create for the Key Vault.
+
+Each entry in the map supports the following arguments:
+- `role_definition_name` - (Required) The name of the role definition to assign
+- `principal_id` - (Required) The ID of the principal to assign the role to
+- `description` - (Optional) Description of the role assignment
+
+Example:
+ROLE_ASSIGNMENTS
+}
