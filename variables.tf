@@ -177,6 +177,8 @@ variable "key_vault_administrators" {
     skip_service_principal_aad_check = optional(bool, false)
     principal_type                   = optional(string, null)
   }))
+
+  default = []
 }
 
 variable "key_vault_crypto_users" {
@@ -186,6 +188,8 @@ variable "key_vault_crypto_users" {
     skip_service_principal_aad_check = optional(bool, false)
     principal_type                   = optional(string, null)
   }))
+
+  default = []
 }
 
 variable "key_vault_secret_users" {
@@ -195,6 +199,8 @@ variable "key_vault_secret_users" {
     skip_service_principal_aad_check = optional(bool, false)
     principal_type                   = optional(string, null)
   }))
+  
+  default = []
 }
 
 variable "key_vault_certificate_users" {
@@ -204,6 +210,8 @@ variable "key_vault_certificate_users" {
     skip_service_principal_aad_check = optional(bool, false)
     principal_type                   = optional(string, null)
   }))
+
+  default = []
 }
 
 
