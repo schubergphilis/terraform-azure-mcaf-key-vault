@@ -36,14 +36,14 @@ resource "azurerm_role_assignment" "this" {
   principal_type                   = each.value.principal_type
 }
 
+#checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
 resource "azurerm_key_vault_key" "cmkrsa" {
   count = var.cmk_keys_create ? 1 : 0
 
   name         = var.cmkrsa_key_name
   key_vault_id = azurerm_key_vault.this.id
-  #checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
-  key_type = "RSA"
-  key_size = 4096
+  key_type     = "RSA"
+  key_size     = 4096
   key_opts = [
     "unwrapKey",
     "wrapKey"
