@@ -28,7 +28,6 @@ A Private endpoint supports the following attributes:
 
 Use this variable to declaratively manage private endpoint instances, including DNS integration, naming, and network placement.
 DESCRIPTION
-  nullable    = false
 }
 variable "private_endpoints_manage_dns_zone_group" {
   type        = bool
