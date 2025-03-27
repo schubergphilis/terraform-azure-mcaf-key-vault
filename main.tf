@@ -1,60 +1,62 @@
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "this" {
-  resource_group_name             = var.key_vault.resource_group_name
-  location                        = var.key_vault.location
-  name                            = var.key_vault.name
-  tenant_id                       = var.key_vault.tenant_id
-  sku_name                        = var.key_vault.sku
-  enabled_for_disk_encryption     = var.key_vault.enabled_for_disk_encryption
-  enabled_for_deployment          = var.key_vault.enabled_for_deployment
-  enabled_for_template_deployment = var.key_vault.enabled_for_template_deployment
-  enable_rbac_authorization       = var.key_vault.enable_rbac_authorization
-  purge_protection_enabled        = var.key_vault.purge_protection
-  soft_delete_retention_days      = var.key_vault.soft_delete_retention_days
-  public_network_access_enabled   = var.key_vault.public_network_access_enabled
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  name                            = var.name
+  tenant_id                       = var.tenant_id
+  sku_name                        = var.sku
+  enabled_for_disk_encryption     = var.enabled_for_disk_encryption
+  enabled_for_deployment          = var.enabled_for_deployment
+  enabled_for_template_deployment = var.enabled_for_template_deployment
+  enable_rbac_authorization       = var.enable_rbac_authorization
+  purge_protection_enabled        = var.purge_protection
+  soft_delete_retention_days      = var.soft_delete_retention_days
+  public_network_access_enabled   = var.public_network_access_enabled
 
   network_acls {
-    default_action             = length(var.key_vault.ip_rules) == 0 && length(var.key_vault.subnet_ids) == 0 ? var.key_vault.default_action : "Deny"
-    ip_rules                   = var.key_vault.ip_rules
-    virtual_network_subnet_ids = var.key_vault.subnet_ids
-    bypass                     = var.key_vault.network_bypass
+    default_action             = length(var.ip_rules) == 0 && length(var.subnet_ids) == 0 ? var.default_network_action : "Deny"
+    ip_rules                   = var.ip_rules
+    virtual_network_subnet_ids = var.subnet_ids
+    bypass                     = var.network_bypass
   }
 
-  tags = merge(
-    try(var.tags),
-    try(var.key_vault.tags),
-    tomap({
-      "Resource Type" = "Key vault"
-    })
-  )
+  tags = merge(var.tags, var.tags, {
+    "Resource Type" = "Key vault"
+  })
 }
 
 resource "azurerm_role_assignment" "this" {
-  scope                = azurerm_key_vault.this.id
-  role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azurerm_client_config.current.object_id
+  for_each = { for ra in local.role_assignments : "${ra.role_definition_name}_${ra.principal_id}" => ra }
+
+  scope                            = azurerm_key_vault.this.id
+  role_definition_name             = each.value.role_definition_name
+  principal_id                     = each.value.principal_id
+  skip_service_principal_aad_check = each.value.skip_service_principal_aad_check
+  principal_type                   = each.value.principal_type
 }
 
-resource "azurerm_key_vault_key" "cmkrsa" {
-  count = var.key_vault.cmk_keys_create ? 1 : 0
 
-  name         = var.key_vault.cmkrsa_key_name
+resource "azurerm_key_vault_key" "cmkrsa" {
+  count = var.cmk_keys_create ? 1 : 0
+
+  name         = var.cmkrsa_key_name
   key_vault_id = azurerm_key_vault.this.id
-  key_type     = "RSA"
-  key_size     = 4096
+  #checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
+  key_type = "RSA"
+  key_size = 4096
   key_opts = [
     "unwrapKey",
     "wrapKey"
   ]
-  expiration_date = var.key_vault.cmk_expiration_date
+  expiration_date = var.cmk_expiration_date
 
   rotation_policy {
     automatic {
-      time_after_creation = var.key_vault.cmk_rotation_period
+      time_after_creation = var.cmk_rotation_period
     }
-    expire_after         = var.key_vault.cmk_expiry_period
-    notify_before_expiry = var.key_vault.cmk_notify_period
+    expire_after         = var.cmk_expiry_period
+    notify_before_expiry = var.cmk_notify_period
   }
 
   depends_on = [
@@ -63,9 +65,10 @@ resource "azurerm_key_vault_key" "cmkrsa" {
 }
 
 resource "azurerm_key_vault_key" "this" {
-  for_each = var.key_vault_key != null ? var.key_vault_key : {}
+  for_each = var.keys != null ? var.keys : {}
 
-  key_opts        = each.value.opts
+  key_opts = each.value.opts
+  #checkov:skip=CKV_AZURE_112: Not all keys need to be HS
   key_type        = each.value.type
   key_vault_id    = azurerm_key_vault.this.id
   name            = each.value.name == null ? each.key : each.value.name
@@ -87,13 +90,10 @@ resource "azurerm_key_vault_key" "this" {
     }
   }
 
-  tags = merge(
-    try(var.tags),
-    try(each.value.tags),
-    tomap({
-      "Resource Type" = "Key vault key"
-    })
-  )
+  tags = merge(var.tags, {
+    "Resource Type" = "Key vault key"
+    },
+  each.value.tags)
 
   depends_on = [
     azurerm_role_assignment.this
