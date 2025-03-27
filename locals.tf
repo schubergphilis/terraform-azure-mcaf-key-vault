@@ -25,4 +25,9 @@ locals {
     local.key_vault_certificate_users_assignments,
     local.key_vault_crypto_users_assignments,
   local.key_vault_secret_users_assignments)
+
+  should_create_pep_with_dns_zone_group = (
+    var.private_endpoint != null &&
+    !var.private_endpoints_manage_dns_zone_group
+  )
 }

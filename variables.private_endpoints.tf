@@ -1,5 +1,5 @@
-variable "private_endpoints" {
-  type = map(object({
+variable "private_endpoint" {
+  type = object({
     name                            = optional(string, null)
     location                        = optional(string, null)
     tags                            = optional(map(string), {})
@@ -9,12 +9,12 @@ variable "private_endpoints" {
     private_service_connection_name = optional(string, null)
     custom_network_interface_name   = optional(string, null)
     resource_group_name             = optional(string, null)
-  }))
-  default     = {}
+  })
+  default     = null
   description = <<DESCRIPTION
-Defines a map of private endpoints to create. Each item in the map represents a single private endpoint configuration. The keys are arbitrary and used only for iteration—they do not impact naming or deployment behavior.
+Defines a private endpoint to create.
 
-Each private endpoint supports the following attributes:
+A Private endpoint supports the following attributes:
 
 - `name` – (Optional) The name of the private endpoint. If omitted, a name will be auto-generated.
 - `location` – (Optional) Azure region where the private endpoint will be created. If not specified, defaults to the location of the associated resource group.

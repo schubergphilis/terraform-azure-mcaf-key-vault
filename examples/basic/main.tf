@@ -12,14 +12,14 @@ terraform {
 module "key_vault" {
   source = "../.."
 
-  name                            = "my-key-vault"
-  tenant_id                       = "e55dda83-e842-4de8-9889-2903a7ebaf15"
-  resource_group_name             = "resource-group-name"
-  
-  network_bypass                  = "AzureServices"
-  cmkrsa_key_name                 = "cmkrsa"
-  cmk_keys_create                 = true
-  cmk_expiration_date             = "2030-12-31T00:00:00Z"
+  name                = "my-key-vault"
+  tenant_id           = "e55dda83-e842-4de8-9889-2903a7ebaf15"
+  resource_group_name = "resource-group-name"
+
+  network_bypass      = "AzureServices"
+  cmkrsa_key_name     = "cmkrsa"
+  cmk_keys_create     = true
+  cmk_expiration_date = "2030-12-31T00:00:00Z"
 
   tags = {
     Environment = "Production"
