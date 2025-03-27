@@ -28,7 +28,6 @@ module "key_vault" {
   subnet_ids                      = []
   network_bypass                  = "AzureServices"
   cmkrsa_key_name                 = "cmkrsa"
-  cmkec_key_name                  = "cmkec"
   cmk_keys_create                 = true
   cmk_expiration_date             = "2030-12-31T00:00:00Z"
 
