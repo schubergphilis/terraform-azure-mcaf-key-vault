@@ -181,7 +181,7 @@ variable "role_assignments" {
   default     = {}
 }
 
-variable "key_vault_keys" {
+variable "keys" {
   type = map(object({
     name            = optional(string, null)
     type            = optional(string)

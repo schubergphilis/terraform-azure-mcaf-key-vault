@@ -65,10 +65,10 @@ resource "azurerm_key_vault_key" "cmkrsa" {
 }
 
 resource "azurerm_key_vault_key" "this" {
-  for_each = var.key_vault_keys != null ? var.key_vault_keys : {}
+  for_each = var.keys != null ? var.keys : {}
 
   key_opts = each.value.opts
-  #checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
+  #checkov:skip=CKV_AZURE_112: Not all keys need to be HS
   key_type        = each.value.type
   key_vault_id    = azurerm_key_vault.this.id
   name            = each.value.name == null ? each.key : each.value.name
