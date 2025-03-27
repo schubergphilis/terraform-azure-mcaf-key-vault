@@ -1,14 +1,14 @@
 variable "private_endpoint" {
   type = object({
-    name                            = optional(string, null)
-    location                        = optional(string, null)
+    name                            = optional(string)
+    location                        = optional(string)
     tags                            = optional(map(string), {})
     subnet_id                       = string
     private_dns_zone_group_name     = optional(string, "default")
     private_dns_zone_resource_ids   = optional(set(string), [])
-    private_service_connection_name = optional(string, null)
-    custom_network_interface_name   = optional(string, null)
-    resource_group_name             = optional(string, null)
+    private_service_connection_name = optional(string)
+    custom_network_interface_name   = optional(string)
+    resource_group_name             = optional(string)
   })
   default     = null
   description = <<DESCRIPTION

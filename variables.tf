@@ -175,7 +175,7 @@ variable "key_vault_administrators" {
   type = set(object({
     principal_id                     = string
     skip_service_principal_aad_check = optional(bool, false)
-    principal_type                   = optional(string, null)
+    principal_type                   = optional(string)
   }))
 
   default = []
@@ -186,7 +186,7 @@ variable "key_vault_crypto_users" {
   type = set(object({
     principal_id                     = string
     skip_service_principal_aad_check = optional(bool, false)
-    principal_type                   = optional(string, null)
+    principal_type                   = optional(string)
   }))
 
   default = []
@@ -208,7 +208,7 @@ variable "key_vault_certificate_users" {
   type = set(object({
     principal_id                     = string
     skip_service_principal_aad_check = optional(bool, false)
-    principal_type                   = optional(string, null)
+    principal_type                   = optional(string)
   }))
 
   default = []
@@ -217,21 +217,21 @@ variable "key_vault_certificate_users" {
 
 variable "keys" {
   type = map(object({
-    name            = optional(string, null)
+    name            = optional(string)
     type            = optional(string)
-    curve           = optional(string, null)
-    size            = optional(number, null)
+    curve           = optional(string)
+    size            = optional(number)
     opts            = optional(list(string), [])
-    expiration_date = optional(string, null)
-    not_before_date = optional(string, null)
+    expiration_date = optional(string)
+    not_before_date = optional(string)
     rotation_policy = optional(object({
       automatic = optional(object({
-        time_after_creation = optional(string, null)
-        time_before_expiry  = optional(string, null)
-      }), null)
-      expire_after         = optional(string, null)
-      notify_before_expiry = optional(string, null)
-    }), null)
+        time_after_creation = optional(string)
+        time_before_expiry  = optional(string)
+      }))
+      expire_after         = optional(string)
+      notify_before_expiry = optional(string)
+    }))
     tags = optional(map(string), {})
   }))
   default     = {}
