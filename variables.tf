@@ -259,9 +259,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-variable "client_administrator_access" {
-  type        = bool
-  default     = true
-  description = "Provide the current client that creates the Key vault administrator access"
-}
