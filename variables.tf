@@ -170,16 +170,42 @@ variable "cmk_expiration_date" {
   description = "Optional expiration date for the key (ISO 8601 format)."
 }
 
-variable "role_assignments" {
-  type = map(object({
-    role_definition_name             = string
+variable "key_vault_administrators" {
+  description = "Set of Key vault Administrators"
+  type = set(object({
     principal_id                     = string
     skip_service_principal_aad_check = optional(bool, false)
     principal_type                   = optional(string, null)
   }))
-  description = "Role assignments scoped to the Key Vault."
-  default     = {}
 }
+
+variable "key_vault_crypto_users" {
+  description = "Set of Key Vault Crypto Users"
+  type = set(object({
+    principal_id                     = string
+    skip_service_principal_aad_check = optional(bool, false)
+    principal_type                   = optional(string, null)
+  }))
+}
+
+variable "key_vault_secret_users" {
+  description = "Set of Key Vault Secret Users"
+  type = set(object({
+    principal_id                     = string
+    skip_service_principal_aad_check = optional(bool, false)
+    principal_type                   = optional(string, null)
+  }))
+}
+
+variable "key_vault_certificate_users" {
+  description = "Set of Key Vault Certificate Users"
+  type = set(object({
+    principal_id                     = string
+    skip_service_principal_aad_check = optional(bool, false)
+    principal_type                   = optional(string, null)
+  }))
+}
+
 
 variable "keys" {
   type = map(object({

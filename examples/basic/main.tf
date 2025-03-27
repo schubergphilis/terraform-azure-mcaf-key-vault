@@ -34,4 +34,9 @@ module "key_vault" {
   tags = {
     Environment = "Production"
   }
+
+  key_vault_certificate_users = [
+    {
+      pricipal_id = "e55dda83-e842-4de8-9889-2903a7ebaf15"
+  }]
 }
