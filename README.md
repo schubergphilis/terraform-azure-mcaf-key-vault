@@ -42,7 +42,6 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | The name of the Azure Key Vault. | `string` | n/a | yes |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | The name of the resource group in which the Key Vault will be created. | `string` | n/a | yes |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | The Azure Active Directory tenant ID for authenticating requests to the Key Vault. | `string` | n/a | yes |
-| <a name="input_client_administrator_access"></a> [client\_administrator\_access](#input\_client\_administrator\_access) | Provide the current client that creates the Key vault administrator access | `bool` | `true` | no |
 | <a name="input_cmk_expiration_date"></a> [cmk\_expiration\_date](#input\_cmk\_expiration\_date) | Optional expiration date for the key (ISO 8601 format). | `string` | `null` | no |
 | <a name="input_cmk_expiry_period"></a> [cmk\_expiry\_period](#input\_cmk\_expiry\_period) | The key expiry period (ISO 8601 duration). | `string` | `"P2Y"` | no |
 | <a name="input_cmk_keys_create"></a> [cmk\_keys\_create](#input\_cmk\_keys\_create) | Whether to create customer-managed keys (CMKs). | `bool` | `false` | no |
