@@ -199,7 +199,7 @@ variable "key_vault_secret_users" {
     skip_service_principal_aad_check = optional(bool, false)
     principal_type                   = optional(string, null)
   }))
-  
+
   default = []
 }
 
