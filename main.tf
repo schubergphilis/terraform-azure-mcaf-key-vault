@@ -41,8 +41,9 @@ resource "azurerm_key_vault_key" "cmkrsa" {
 
   name         = var.cmkrsa_key_name
   key_vault_id = azurerm_key_vault.this.id
-  key_type     = "RSA"
-  key_size     = 4096
+  #checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
+  key_type = "RSA"
+  key_size = 4096
   key_opts = [
     "unwrapKey",
     "wrapKey"
