@@ -37,6 +37,6 @@ module "key_vault" {
 
   key_vault_certificate_users = [
     {
-      pricipal_id = "e55dda83-e842-4de8-9889-2903a7ebaf15"
+      principal_id = "e55dda83-e842-4de8-9889-2903a7ebaf15"
   }]
 }
