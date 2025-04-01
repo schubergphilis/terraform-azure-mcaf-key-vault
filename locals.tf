@@ -9,7 +9,7 @@ locals {
     principal_type                   = null
   }])
 
-  key_vault_encryption_users = toset([for v in var.var.key_vault_crypto_users : merge(v, {
+  key_vault_encryption_users = toset([for v in var.key_vault_encryption_users : merge(v, {
     role_definition_name = "Key Vault Crypto Service Encryption User"
   })])
 
