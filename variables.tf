@@ -134,6 +134,14 @@ variable "cmkrsa_key_name" {
   default     = "cmkrsa"
   description = "Name of the RSA CMK to create."
 }
+
+variable "cmkrsa_key_size" {
+  type        = number
+  default     = 4096
+  description = "Size of the RSA CMK to create."
+}
+
+
 variable "cmk_rotation_period" {
   type        = string
   default     = "P18M"
@@ -169,6 +177,8 @@ variable "cmk_expiration_date" {
   default     = null
   description = "Optional expiration date for the key (ISO 8601 format)."
 }
+
+
 
 variable "key_vault_administrators" {
   description = "Set of Key vault Administrators"
