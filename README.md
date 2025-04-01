@@ -44,6 +44,7 @@ No modules.
 | <a name="input_cmk_notify_period"></a> [cmk\_notify\_period](#input\_cmk\_notify\_period) | The notification period before key expiry or rotation. | `string` | `"P30D"` | no |
 | <a name="input_cmk_rotation_period"></a> [cmk\_rotation\_period](#input\_cmk\_rotation\_period) | The key rotation period (ISO 8601 duration). | `string` | `"P18M"` | no |
 | <a name="input_cmkrsa_key_name"></a> [cmkrsa\_key\_name](#input\_cmkrsa\_key\_name) | Name of the RSA CMK to create. | `string` | `"cmkrsa"` | no |
+| <a name="input_cmkrsa_key_size"></a> [cmkrsa\_key\_size](#input\_cmkrsa\_key\_size) | Size of the RSA CMK to create. | `number` | `4096` | no |
 | <a name="input_default_network_action"></a> [default\_network\_action](#input\_default\_network\_action) | The default action when no network rule matches. Usually 'Deny'. | `string` | `"Deny"` | no |
 | <a name="input_enable_rbac_authorization"></a> [enable\_rbac\_authorization](#input\_enable\_rbac\_authorization) | Specifies whether Azure RBAC is used to authorize access instead of access policies. | `bool` | `true` | no |
 | <a name="input_enabled_for_deployment"></a> [enabled\_for\_deployment](#input\_enabled\_for\_deployment) | Specifies if Azure Resource Manager is permitted to retrieve secrets. | `bool` | `false` | no |
