@@ -27,7 +27,7 @@ resource "azurerm_private_endpoint" "this" {
 
 #This PEP is used when the DNS is managed by policy
 resource "azurerm_private_endpoint" "this_unmanaged_dns" {
-  count = !local.should_create_pep_with_dns_zone_group ? 1 : 0
+  count = local.should_create_pep_without_dns_zone_group ? 1 : 0
 
   location                      = var.private_endpoint.location != null ? var.private_endpoint.location : var.location
   name                          = var.private_endpoint.name
