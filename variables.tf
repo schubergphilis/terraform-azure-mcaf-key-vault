@@ -214,6 +214,16 @@ variable "key_vault_certificate_users" {
   default = []
 }
 
+variable "key_vault_encryption_users" {
+  description = "Set of Key Vault Encryption Users"
+  type = set(object({
+    principal_id                     = string
+    skip_service_principal_aad_check = optional(bool, false)
+    principal_type                   = optional(string)
+  }))
+
+  default = []
+}
 
 variable "keys" {
   type = map(object({
