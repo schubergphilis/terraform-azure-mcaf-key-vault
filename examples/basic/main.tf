@@ -25,8 +25,8 @@ module "key_vault" {
     Environment = "Production"
   }
 
-  key_vault_certificate_users = [
-    {
+  key_vault_certificate_users = {
+    azure_devops_user = {
       principal_id = "e55dda83-e842-4de8-9889-2903a7ebaf15"
-  }]
+  } }
 }

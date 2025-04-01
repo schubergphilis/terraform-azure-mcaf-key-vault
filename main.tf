@@ -27,7 +27,7 @@ resource "azurerm_key_vault" "this" {
 }
 
 resource "azurerm_role_assignment" "this" {
-  for_each = { for ra in local.role_assignments : "${ra.role_definition_name}_${ra.principal_id}" => ra }
+  for_each = local.role_assignments
 
   scope                            = azurerm_key_vault.this.id
   role_definition_name             = each.value.role_definition_name
