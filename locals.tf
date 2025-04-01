@@ -33,6 +33,11 @@ locals {
 
   should_create_pep_with_dns_zone_group = (
     var.private_endpoint != null &&
+    var.private_endpoints_manage_dns_zone_group
+  )
+
+  should_create_pep_without_dns_zone_group = (
+    var.private_endpoint != null &&
     !var.private_endpoints_manage_dns_zone_group
   )
 }
