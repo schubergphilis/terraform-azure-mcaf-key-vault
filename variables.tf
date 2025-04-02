@@ -125,13 +125,13 @@ variable "network_bypass" {
 
 variable "customer_managed_key" {
   type = object({
-    rsa_key_name        = optional(string, "cmkrsa")
-    rsa_key_size        = optional(string, 4096)
-    rotation_period     = optional(string, "P18M")
-    expiry_period       = optional(string, "P2Y")
-    notify_period       = optional(string, "P30D")
-    expiration_date     = optional(string)
-    time_before_expiry  = optional(string)
+    rsa_key_name       = optional(string, "cmkrsa")
+    rsa_key_size       = optional(string, 4096)
+    rotation_period    = optional(string, "P18M")
+    expiry_period      = optional(string, "P2Y")
+    notify_period      = optional(string, "P30D")
+    expiration_date    = optional(string)
+    time_before_expiry = optional(string)
   })
 
   default = null
