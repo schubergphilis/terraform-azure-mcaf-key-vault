@@ -17,10 +17,12 @@ module "key_vault" {
   resource_group_name = "resource-group-name"
 
   network_bypass      = "AzureServices"
-  cmkrsa_key_name     = "cmkrsa"
-  cmk_keys_create     = true
-  cmk_expiration_date = "2030-12-31T00:00:00Z"
-
+  
+  customer_managed_key = {
+    rsa_key_name = "cmkrsa"
+    expiration_date = "2030-12-31T00:00:00Z"
+  }
+  
   tags = {
     Environment = "Production"
   }

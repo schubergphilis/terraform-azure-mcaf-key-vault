@@ -38,26 +38,26 @@ resource "azurerm_role_assignment" "this" {
 
 
 resource "azurerm_key_vault_key" "cmkrsa" {
-  count = var.cmk_keys_create ? 1 : 0
+  count = var.customer_managed_key != null ? 1 : 0
 
-  name         = var.cmkrsa_key_name
+  name         = var.customer_managed_key.rsa_key_namet
   key_vault_id = azurerm_key_vault.this.id
   #checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
   key_type = "RSA"
-  key_size = var.cmkrsa_key_size
+  key_size = var.customer_managed_key.rsa_key_size
   key_opts = [
     "unwrapKey",
     "wrapKey"
   ]
-  expiration_date = var.cmk_expiration_date
+  expiration_date = var.customer_managed_key.expiration_date
 
   rotation_policy {
     automatic {
-      time_after_creation = var.cmk_rotation_period
-      time_before_expiry  = var.cmk_time_before_expiry
+      time_after_creation = var.customer_managed_key.rotation_period
+      time_before_expiry  = var.customer_managed_key.time_before_expiry
     }
-    expire_after         = var.cmk_expiry_period
-    notify_before_expiry = var.cmk_notify_period
+    expire_after         = var.customer_managed_key.expiry_period
+    notify_before_expiry = var.customer_managed_key.notify_period
   }
 
   depends_on = [
