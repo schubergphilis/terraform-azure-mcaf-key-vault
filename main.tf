@@ -40,7 +40,7 @@ resource "azurerm_role_assignment" "this" {
 resource "azurerm_key_vault_key" "cmkrsa" {
   count = var.customer_managed_key != null ? 1 : 0
 
-  name         = var.customer_managed_key.rsa_key_namet
+  name         = var.customer_managed_key.rsa_key_name
   key_vault_id = azurerm_key_vault.this.id
   #checkov:skip=CKV_AZURE_112: Not all keys need to be HSM
   key_type = "RSA"
