@@ -36,7 +36,6 @@ resource "azurerm_role_assignment" "this" {
   principal_type                   = each.value.principal_type
 }
 
-
 resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
   count = var.customer_managed_key != null ? 1 : 0
 
@@ -63,6 +62,11 @@ resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
   depends_on = [
     azurerm_role_assignment.this
   ]
+}
+
+moved {
+  from = azurerm_key_vault_key.cmkrsa
+  to   = azurerm_key_vault_key.customer_managed_key_rsa
 }
 
 resource "azurerm_key_vault_key" "this" {
