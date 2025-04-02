@@ -37,7 +37,7 @@ resource "azurerm_role_assignment" "this" {
 }
 
 
-resource "azurerm_key_vault_key" "cmkrsa" {
+resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
   count = var.customer_managed_key != null ? 1 : 0
 
   name         = var.customer_managed_key.rsa_key_name
