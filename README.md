@@ -43,6 +43,7 @@ No modules.
 | <a name="input_cmk_keys_create"></a> [cmk\_keys\_create](#input\_cmk\_keys\_create) | Whether to create customer-managed keys (CMKs). | `bool` | `false` | no |
 | <a name="input_cmk_notify_period"></a> [cmk\_notify\_period](#input\_cmk\_notify\_period) | The notification period before key expiry or rotation. | `string` | `"P30D"` | no |
 | <a name="input_cmk_rotation_period"></a> [cmk\_rotation\_period](#input\_cmk\_rotation\_period) | The key rotation period (ISO 8601 duration). | `string` | `"P18M"` | no |
+| <a name="input_cmk_time_before_expiry"></a> [cmk\_time\_before\_expiry](#input\_cmk\_time\_before\_expiry) | Optional Time before Expiry rotation policy for the CMK (ISO 8601 format). | `string` | `null` | no |
 | <a name="input_cmkrsa_key_name"></a> [cmkrsa\_key\_name](#input\_cmkrsa\_key\_name) | Name of the RSA CMK to create. | `string` | `"cmkrsa"` | no |
 | <a name="input_cmkrsa_key_size"></a> [cmkrsa\_key\_size](#input\_cmkrsa\_key\_size) | Size of the RSA CMK to create. | `number` | `4096` | no |
 | <a name="input_default_network_action"></a> [default\_network\_action](#input\_default\_network\_action) | The default action when no network rule matches. Usually 'Deny'. | `string` | `"Deny"` | no |
