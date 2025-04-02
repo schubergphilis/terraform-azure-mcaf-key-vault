@@ -64,11 +64,6 @@ resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
   ]
 }
 
-moved {
-  from = azurerm_key_vault_key.cmkrsa
-  to   = azurerm_key_vault_key.customer_managed_key_rsa
-}
-
 resource "azurerm_key_vault_key" "this" {
   for_each = var.keys != null ? var.keys : {}
 
