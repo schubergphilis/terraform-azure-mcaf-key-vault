@@ -52,7 +52,7 @@ resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
 
   rotation_policy {
     automatic {
-      time_after_creation = var.customer_managed_key.rotation_period
+      time_after_creation = var.customer_managed_key.time_before_expiry != null ? null : var.customer_managed_key.rotation_period
       time_before_expiry  = var.customer_managed_key.time_before_expiry
     }
     expire_after         = var.customer_managed_key.expiry_period
