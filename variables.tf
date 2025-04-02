@@ -123,62 +123,31 @@ variable "network_bypass" {
   }
 }
 
-variable "cmk_keys_create" {
-  type        = bool
-  default     = false
-  description = "Whether to create customer-managed keys (CMKs)."
+variable "customer_managed_key" {
+  type = object({
+    rsa_key_name       = optional(string, "cmkrsa")
+    rsa_key_size       = optional(string, 4096)
+    rotation_period    = optional(string, "P18M")
+    expiry_period      = optional(string, "P2Y")
+    notify_period      = optional(string, "P30D")
+    expiration_date    = optional(string)
+    time_before_expiry = optional(string)
+  })
+
+  default = null
+
+  description = <<KEY_DETAILS
+Defines the configuration for a customer-managed RSA key in Azure Key Vault.
+
+- `rsa_key_name` - (Optional) The name of the RSA key. Defaults to "cmkrsa".
+- `rsa_key_size` - (Optional) The size of the RSA key in bits. Common values are 2048, 3072, or 4096. Defaults to 4096.
+- `rotation_period` - (Optional) The duration before the key should be automatically rotated, in ISO 8601 format (e.g., P18M = 18 months). Defaults to "P18M".
+- `expiry_period` - (Optional) The duration after which the key will expire, in ISO 8601 format (e.g., P2Y = 2 years). Defaults to "P2Y".
+- `notify_period` - (Optional) The duration before key expiration to send a notification, in ISO 8601 format. Defaults to "P30D".
+- `expiration_date` - (Optional) A specific RFC 3339 timestamp for when the key should expire. Overrides `expiry_period` if set.
+- `time_before_expiry` - (Optional) A buffer duration before expiration to trigger pre-expiry actions or automation.
+KEY_DETAILS
 }
-
-variable "cmkrsa_key_name" {
-  type        = string
-  default     = "cmkrsa"
-  description = "Name of the RSA CMK to create."
-}
-
-variable "cmkrsa_key_size" {
-  type        = number
-  default     = 4096
-  description = "Size of the RSA CMK to create."
-}
-
-
-variable "cmk_rotation_period" {
-  type        = string
-  default     = "P18M"
-  description = "The key rotation period (ISO 8601 duration)."
-  validation {
-    condition     = can(regex("^P\\d+[YMD]$", var.cmk_rotation_period)) || can(regex("^P\\d+M$", var.cmk_rotation_period))
-    error_message = "cmk_rotation_period must be a valid ISO 8601 duration (e.g., P18M, P2Y)."
-  }
-}
-
-variable "cmk_expiry_period" {
-  type        = string
-  default     = "P2Y"
-  description = "The key expiry period (ISO 8601 duration)."
-  validation {
-    condition     = can(regex("^P\\d+[YMD]$", var.cmk_expiry_period)) || can(regex("^P\\d+M$", var.cmk_expiry_period))
-    error_message = "cmk_expiry_period must be a valid ISO 8601 duration (e.g., P2Y, P18M)."
-  }
-}
-
-variable "cmk_notify_period" {
-  type        = string
-  default     = "P30D"
-  description = "The notification period before key expiry or rotation."
-  validation {
-    condition     = can(regex("^P\\d+D$", var.cmk_notify_period))
-    error_message = "cmk_notify_period must be a valid ISO 8601 duration (e.g., P30D)."
-  }
-}
-
-variable "cmk_expiration_date" {
-  type        = string
-  default     = null
-  description = "Optional expiration date for the key (ISO 8601 format)."
-}
-
-
 
 variable "key_vault_administrators" {
   description = "Set of Key vault Administrators"
