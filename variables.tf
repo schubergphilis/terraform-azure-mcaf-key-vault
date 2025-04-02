@@ -178,7 +178,11 @@ variable "cmk_expiration_date" {
   description = "Optional expiration date for the key (ISO 8601 format)."
 }
 
-
+variable "cmk_time_before_expiry" {
+  type        = string
+  default     = null
+  description = "Optional Time before Expiry rotation policy for the CMK (ISO 8601 format)."
+}
 
 variable "key_vault_administrators" {
   description = "Set of Key vault Administrators"

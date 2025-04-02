@@ -54,6 +54,7 @@ resource "azurerm_key_vault_key" "cmkrsa" {
   rotation_policy {
     automatic {
       time_after_creation = var.cmk_rotation_period
+      time_before_expiry  = var.cmk_time_before_expiry
     }
     expire_after         = var.cmk_expiry_period
     notify_before_expiry = var.cmk_notify_period
