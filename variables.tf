@@ -145,7 +145,7 @@ Defines the configuration for a customer-managed RSA key in Azure Key Vault.
 - `expiry_period` - (Optional) The duration after which the key will expire, in ISO 8601 format (e.g., P2Y = 2 years). Defaults to "P2Y".
 - `notify_period` - (Optional) The duration before key expiration to send a notification, in ISO 8601 format. Defaults to "P30D".
 - `expiration_date` - (Optional) A specific RFC 3339 timestamp for when the key should expire. Overrides `expiry_period` if set.
-- `time_before_expiry` - (Optional) A buffer duration before expiration to trigger pre-expiry actions or automation.
+- `time_before_expiry` - (Optional) A buffer duration before expiration to trigger pre-expiry actions or automation. if set rotation period will be ignored.
 KEY_DETAILS
 }
 
