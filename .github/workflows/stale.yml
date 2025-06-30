@@ -1,64 +1,83 @@
 name: Notify Stale Branch Owners (Dry Run)
 
 on:
-  #schedule:
-  #  - cron: "0 2 * * *"
   workflow_dispatch:
   push:
     branches:
       - stale-branch
 
+env:
+  IGNORED_PREFIXES: "feature/,bugfix/"
+  LAST_COMMIT_AGE_DAYS: 60
+
 jobs:
-  notify-stale-branches:
+  notify:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Run stale branch cleanup (dry-run) and capture output
-        id: cleanup
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Running cleanup-stale-branches-action in dry-run mode..."
-          docker run --rm \
-            -e INPUT_TOKEN=${GITHUB_TOKEN} \
-            -e INPUT_REPOSITORY=${{ github.repository }} \
-            -e INPUT_ALLOWED-PREFIXES="feature/yamllint_workflow"
-            -e INPUT_IGNORED-PREFIXES="feature/,bugfix/,correct_role_name,fix/deterministic_map_keys,keyexpiration,to_v1" \
-            -e INPUT_LAST-COMMIT-AGE-DAYS=60 \
-            -e INPUT_DRY-RUN=true \
-            -e INPUT_RATE-LIMIT=true \
-            ghcr.io/cbrgm/cleanup-stale-branches-action:latest \
-            | tee cleanup-output.log
+      - name: Run stale branch cleanup (dry-run)
+        uses: cbrgm/cleanup-stale-branches-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          ignored-prefixes: ${{ env.IGNORED_PREFIXES }}
+          last-commit-age-days: ${{ env.LAST_COMMIT_AGE_DAYS }}
+          dry-run: true
+          rate-limit: true
 
-      - name: Parse dry-run output and notify branch owners
+
+      - name: Re-evaluate stale branches and notify owners
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
+          IGNORED_PREFIXES: ${{ env.IGNORED_PREFIXES }}
+          LAST_COMMIT_AGE_DAYS: ${{ env.LAST_COMMIT_AGE_DAYS }}
         run: |
-          echo "Parsing cleanup-output.log to extract stale branches..."
-          stale_branches=$(grep -oP '^\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} - \K.*' cleanup-output.log \
-            | grep -v 'Skipping' \
-            | grep -v 'Dry-run enabled' || true)
+          echo "Scanning for stale branches..."
 
-          if [ -z "$stale_branches" ]; then
-            echo "✅ No stale branches to notify."
-            exit 0
-          fi
+          IGNORE_REGEX="^($(echo $IGNORED_PREFIXES | sed 's|,|\\||g' | sed 's|/|\\/|g'))"
+          DEFAULT_BRANCH=$(gh api repos/$REPO | jq -r '.default_branch')
+          PROTECTED_BRANCHES=$(gh api repos/$REPO/branches --paginate | jq -r '.[] | select(.protected == true) | .name')
+          OPEN_PRS=$(gh api repos/$REPO/pulls?state=open --paginate)
 
-          for branch in $stale_branches; do
-            echo "Processing $branch..."
-            commit_data=$(gh api repos/$REPO/commits/$branch)
-            commit_author=$(echo "$commit_data" | jq -r '.committer.login')
+          gh api repos/$REPO/branches --paginate | jq -r '.[].name' > all-branches.txt
+
+          while read branch; do
+            # Skip default
+            [ "$branch" = "$DEFAULT_BRANCH" ] && echo "Skipping default branch: $branch" && continue
+
+            # Skip protected
+            echo "$PROTECTED_BRANCHES" | grep -qx "$branch" && echo "Skipping protected branch: $branch" && continue
+
+            # Skip ignored prefixes
+            [[ "$branch" =~ $IGNORE_REGEX ]] && echo "Skipping ignored prefix: $branch" && continue
+
+            # Skip if branch is HEAD of an open PR
+            echo "$OPEN_PRS" | jq -r '.[] | .head.ref' | grep -qx "$branch" && echo "Skipping branch with open PR (as head): $branch" && continue
+
+            # Skip if branch is base of an open PR
+            echo "$OPEN_PRS" | jq -r '.[] | .base.ref' | grep -qx "$branch" && echo "Skipping branch used as base of open PR: $branch" && continue
+
+            # Get commit data
+            commit_data=$(gh api repos/$REPO/commits/$branch 2>/dev/null || true)
+            [ -z "$commit_data" ] && continue
             commit_date=$(echo "$commit_data" | jq -r '.commit.committer.date')
+            commit_author=$(echo "$commit_data" | jq -r '.committer.login')
+
             age_days=$(( ( $(date +%s) - $(date -d "$commit_date" +%s) ) / 86400 ))
 
-            echo "Notifying @$commit_author for $branch ($age_days days old)"
-            gh issue create \
-              --title "Stale Branch: $branch" \
-              --body "The branch \`$branch\` has not had any commits in $age_days days. Last commit by @$commit_author on $commit_date.\n\nPlease review and take action if needed." \
-              --assignee "$commit_author" \
-              --label "stale-branch"
-          done
+            if [ "$age_days" -gt "$LAST_COMMIT_AGE_DAYS" ]; then
+              echo "$branch is stale ($age_days days). Notifying @$commit_author"
+
+              gh issue create \
+                --title "Stale Branch: $branch" \
+                --body "Branch \`$branch\` hasn't had updates in $age_days days. Last committed by @$commit_author on $commit_date.\n\nIt is not protected, not the default, and not involved in any open pull requests. Please review and clean up if no longer needed." \
+                --assignee "$commit_author" \
+                --label "stale-branch"
+            else
+              echo "Branch $branch is fresh ($age_days days)"
+            fi
+          done < all-branches.txt
