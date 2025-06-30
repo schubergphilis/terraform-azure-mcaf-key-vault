@@ -6,78 +6,29 @@ on:
     branches:
       - stale-branch
 
-env:
-  IGNORED_PREFIXES: "correct_role_name,feature/allow_additional_role_assignments,feature/optional_rsa_size,feature/private_endpoints,fix/deterministic_map_keys,keyexpiration,to_v1"
-  LAST_COMMIT_AGE_DAYS: 60
+permissions:
+  issues: write
+  contents: write
 
 jobs:
-  notify:
+  stale_branches:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Run stale branch cleanup (dry-run)
-        uses: cbrgm/cleanup-stale-branches-action@v1
+      - name: Stale Branches
+        uses: crs-k/stale-branches@v5.0.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          ignored-prefixes: ${{ env.IGNORED_PREFIXES }}
-          last-commit-age-days: ${{ env.LAST_COMMIT_AGE_DAYS }}
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          days-before-stale: 60
+          days-before-delete: 150
+          comment-updates: true
+          max-issues: 20
+          tag-committer: true
+          stale-branch-label: 'stale branch 🗑️'
+          compare-branches: 'info'
+          branches-filter-regex: '^((?!dependabot))'
+          rate-limit: false
+          pr-check: true
           dry-run: true
-          rate-limit: true
-
-
-      - name: Re-evaluate stale branches and notify owners
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          IGNORED_PREFIXES: ${{ env.IGNORED_PREFIXES }}
-          LAST_COMMIT_AGE_DAYS: ${{ env.LAST_COMMIT_AGE_DAYS }}
-        run: |
-          echo "Scanning for stale branches..."
-
-          IGNORE_REGEX="^($(echo "$IGNORED_PREFIXES" | sed 's/,/|/g'))"
-          DEFAULT_BRANCH=$(gh api repos/$REPO | jq -r '.default_branch')
-          PROTECTED_BRANCHES=$(gh api repos/$REPO/branches --paginate | jq -r '.[] | select(.protected == true) | .name')
-          OPEN_PRS=$(gh api repos/$REPO/pulls?state=open --paginate)
-
-          gh api repos/$REPO/branches --paginate | jq -r '.[].name' > all-branches.txt
-
-          while read branch; do
-            # Skip default
-            [ "$branch" = "$DEFAULT_BRANCH" ] && echo "Skipping default branch: $branch" && continue
-
-            # Skip protected
-            echo "$PROTECTED_BRANCHES" | grep -qx "$branch" && echo "Skipping protected branch: $branch" && continue
-
-            # Skip ignored prefixes
-            [[ "$branch" =~ $IGNORE_REGEX ]] && echo "Skipping ignored prefix: $branch" && continue
-
-            # Skip if branch is HEAD of an open PR
-            echo "$OPEN_PRS" | jq -r '.[] | .head.ref' | grep -qx "$branch" && echo "Skipping branch with open PR (as head): $branch" && continue
-
-            # Skip if branch is base of an open PR
-            echo "$OPEN_PRS" | jq -r '.[] | .base.ref' | grep -qx "$branch" && echo "Skipping branch used as base of open PR: $branch" && continue
-
-            # Get commit data
-            commit_data=$(gh api repos/$REPO/commits/$branch 2>/dev/null || true)
-            [ -z "$commit_data" ] && continue
-            commit_date=$(echo "$commit_data" | jq -r '.commit.committer.date')
-            commit_author=$(echo "$commit_data" | jq -r '.committer.login')
-
-            age_days=$(( ( $(date +%s) - $(date -d "$commit_date" +%s) ) / 86400 ))
-
-            if [ "$age_days" -gt "$LAST_COMMIT_AGE_DAYS" ]; then
-              echo "$branch is stale ($age_days days). Notifying @$commit_author"
-
-              gh issue create \
-                --title "Stale Branch: $branch" \
-                --body "Branch \`$branch\` hasn't had updates in $age_days days. Last committed by @$commit_author on $commit_date.\n\nIt is not protected, not the default, and not involved in any open pull requests. Please review and clean up if no longer needed." \
-                --assignee "$commit_author" \
-                --label "stale-branch"
-            else
-              echo "Branch $branch is fresh ($age_days days)"
-            fi
-          done < all-branches.txt
+          ignore-issue-interaction: false
+          ignore-commit-messages: ''
+          ignore-committers: ''
