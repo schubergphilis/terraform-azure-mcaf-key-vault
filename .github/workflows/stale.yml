@@ -1,25 +1,61 @@
----
-name: Cleanup Stale Branches
+name: Notify Stale Branch Owners (Dry Run)
 
 on:
-  workflow_dispatch:
   #schedule:
-  #  - cron: '0 0 * * *' # This schedule runs the workflow at midnight every day
-  push:
-    branches:
-      - 'stale-branch'
+  #  - cron: "0 2 * * *"
+  workflow_dispatch:
 
 jobs:
-  cleanup-stale-branches:
+  notify-stale-branches:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Cleanup Stale Branches
-        uses: cbrgm/cleanup-stale-branches-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          #ignore-branches: "foobar,release-*"
-          ignored-prefixes: "feature/,bugfix/"
-          last-commit-age-days: 60
-          dry-run: true
-          rate-limit: true
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run stale branch cleanup (dry-run) and capture output
+        id: cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Running cleanup-stale-branches-action in dry-run mode..."
+          docker run --rm \
+            -e INPUT_TOKEN=${GITHUB_TOKEN} \
+            -e INPUT_REPOSITORY=${{ github.repository }} \
+            -e INPUT_ALLOWED-PREFIXES="feature/yamllint_workflow"
+            -e INPUT_IGNORED-PREFIXES="feature/,bugfix/,correct_role_name,fix/deterministic_map_keys,keyexpiration,to_v1" \
+            -e INPUT_LAST-COMMIT-AGE-DAYS=60 \
+            -e INPUT_DRY-RUN=true \
+            -e INPUT_RATE-LIMIT=true \
+            ghcr.io/cbrgm/cleanup-stale-branches-action:latest \
+            | tee cleanup-output.log
+
+      - name: Parse dry-run output and notify branch owners
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Parsing cleanup-output.log to extract stale branches..."
+          stale_branches=$(grep -oP '^\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} - \K.*' cleanup-output.log \
+            | grep -v 'Skipping' \
+            | grep -v 'Dry-run enabled' || true)
+
+          if [ -z "$stale_branches" ]; then
+            echo "✅ No stale branches to notify."
+            exit 0
+          fi
+
+          for branch in $stale_branches; do
+            echo "Processing $branch..."
+            commit_data=$(gh api repos/$REPO/commits/$branch)
+            commit_author=$(echo "$commit_data" | jq -r '.committer.login')
+            commit_date=$(echo "$commit_data" | jq -r '.commit.committer.date')
+            age_days=$(( ( $(date +%s) - $(date -d "$commit_date" +%s) ) / 86400 ))
+
+            echo "Notifying @$commit_author for $branch ($age_days days old)"
+            gh issue create \
+              --title "Stale Branch: $branch" \
+              --body "The branch \`$branch\` has not had any commits in $age_days days. Last commit by @$commit_author on $commit_date.\n\nPlease review and take action if needed." \
+              --assignee "$commit_author" \
+              --label "stale-branch"
+          done
