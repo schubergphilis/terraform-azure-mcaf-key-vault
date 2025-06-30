@@ -7,7 +7,7 @@ on:
       - stale-branch
 
 env:
-  IGNORED_PREFIXES: "feature/,bugfix/"
+  IGNORED_PREFIXES: "correct_role_name,feature/allow_additional_role_assignments,feature/optional_rsa_size,feature/private_endpoints,fix/deterministic_map_keys,keyexpiration,to_v1"
   LAST_COMMIT_AGE_DAYS: 60
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
         run: |
           echo "Scanning for stale branches..."
 
-          IGNORE_REGEX="^($(echo $IGNORED_PREFIXES | sed 's|,|\\||g' | sed 's|/|\\/|g'))"
+          IGNORE_REGEX="^($(echo "$IGNORED_PREFIXES" | sed 's/,/|/g'))"
           DEFAULT_BRANCH=$(gh api repos/$REPO | jq -r '.default_branch')
           PROTECTED_BRANCHES=$(gh api repos/$REPO/branches --paginate | jq -r '.[] | select(.protected == true) | .name')
           OPEN_PRS=$(gh api repos/$REPO/pulls?state=open --paginate)
