@@ -24,6 +24,10 @@ locals {
     role_definition_name = "Key Vault Secrets User"
   }) }
 
+  key_vault_secret_administrator_assignments = { for k, v in var.key_vault_secret_administrators : "${k}_secrets_administrators" => merge(v, {
+    role_definition_name = "Key Vault Secrets Administrator"
+  }) }
+
   key_vault_certificate_users_assignments = { for k, v in var.key_vault_certificate_users : "${k}_cert_users" => merge(v, {
     role_definition_name = "Key Vault Certificate User"
   }) }
