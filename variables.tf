@@ -182,17 +182,6 @@ variable "key_vault_secret_users" {
   default = {}
 }
 
-variable "key_vault_secret_administrators" {
-  description = "Map of Key Vault Secret Administrators"
-  type = map(object({
-    principal_id                     = string
-    skip_service_principal_aad_check = optional(bool, false)
-    principal_type                   = optional(string, null)
-  }))
-
-  default = {}
-}
-
 variable "key_vault_certificate_users" {
   description = "Map of Key Vault Certificate Users"
   type = map(object({
