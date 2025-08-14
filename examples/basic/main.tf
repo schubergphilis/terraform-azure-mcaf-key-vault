@@ -18,11 +18,6 @@ module "key_vault" {
 
   network_bypass = "AzureServices"
 
-  customer_managed_key = {
-    rsa_key_name    = "cmkrsa"
-    expiration_date = "2030-12-31T00:00:00Z"
-  }
-
   tags = {
     Environment = "Production"
   }
