@@ -59,6 +59,13 @@ resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
     notify_before_expiry = var.customer_managed_key.notify_period
   }
 
+  dynamic "lifecycle" {
+    for_each = var.customer_managed_key.ignore_expiration_date_changes == true ? [1] : []
+    content {
+      ignore_changes = [expiration_date]
+    }
+  }
+
   depends_on = [
     azurerm_role_assignment.this
   ]
@@ -94,6 +101,13 @@ resource "azurerm_key_vault_key" "this" {
     "Resource Type" = "Key vault key"
     },
   each.value.tags)
+
+  dynamic "lifecycle" {
+    for_each = each.value.ignore_expiration_date_changes == true ? [1] : []
+    content {
+      ignore_changes = [expiration_date]
+    }
+  }
 
   depends_on = [
     azurerm_role_assignment.this

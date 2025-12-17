@@ -125,13 +125,14 @@ variable "network_bypass" {
 
 variable "customer_managed_key" {
   type = object({
-    rsa_key_name       = optional(string, "cmkrsa")
-    rsa_key_size       = optional(string, 4096)
-    rotation_period    = optional(string, "P18M")
-    expiry_period      = optional(string, "P2Y")
-    notify_period      = optional(string, "P30D")
-    expiration_date    = optional(string)
-    time_before_expiry = optional(string)
+    rsa_key_name                   = optional(string, "cmkrsa")
+    rsa_key_size                   = optional(string, 4096)
+    rotation_period                = optional(string, "P18M")
+    expiry_period                  = optional(string, "P2Y")
+    notify_period                  = optional(string, "P30D")
+    expiration_date                = optional(string)
+    time_before_expiry             = optional(string)
+    ignore_expiration_date_changes = optional(bool, false)
   })
 
   default = null
@@ -146,6 +147,7 @@ Defines the configuration for a customer-managed RSA key in Azure Key Vault.
 - `notify_period` - (Optional) The duration before key expiration to send a notification, in ISO 8601 format. Defaults to "P30D".
 - `expiration_date` - (Optional) A specific RFC 3339 timestamp for when the key should expire. Overrides `expiry_period` if set.
 - `time_before_expiry` - (Optional) A buffer duration before expiration to trigger pre-expiry actions or automation. if set rotation period will be ignored.
+- `ignore_expiration_date_changes` - (Optional) Whether to ignore changes to the expiration_date in the lifecycle. Defaults to false.
 KEY_DETAILS
 }
 
@@ -206,13 +208,14 @@ variable "key_vault_encryption_users" {
 
 variable "keys" {
   type = map(object({
-    name            = optional(string)
-    type            = optional(string)
-    curve           = optional(string)
-    size            = optional(number)
-    opts            = optional(list(string), [])
-    expiration_date = optional(string)
-    not_before_date = optional(string)
+    name                           = optional(string)
+    type                           = optional(string)
+    curve                          = optional(string)
+    size                           = optional(number)
+    opts                           = optional(list(string), [])
+    expiration_date                = optional(string)
+    not_before_date                = optional(string)
+    ignore_expiration_date_changes = optional(bool, false)
     rotation_policy = optional(object({
       automatic = optional(object({
         time_after_creation = optional(string)
@@ -231,6 +234,7 @@ This map describes the configuration for Azure Key Vault keys.
 - `key_type` - (Required) The type of the key.
 - `key_size` - (Required) The size of the key.
 - `key_opts` - (Required) The key operations that are permitted.
+- `ignore_expiration_date_changes` - (Optional) Whether to ignore changes to the expiration_date in the lifecycle. Defaults to false.
 
 Example Inputs:
 
