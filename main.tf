@@ -60,7 +60,7 @@ resource "azurerm_key_vault_key" "customer_managed_key_rsa" {
   }
 
   lifecycle {
-    ignore_changes = var.customer_managed_key.ignore_expiration_date_changes == true ? [expiration_date] : []
+    ignore_changes = [expiration_date]
   }
 
   depends_on = [
@@ -100,7 +100,7 @@ resource "azurerm_key_vault_key" "this" {
   each.value.tags)
 
   lifecycle {
-    ignore_changes = each.value.ignore_expiration_date_changes == true ? [expiration_date] : []
+    ignore_changes = [expiration_date]
   }
 
   depends_on = [
